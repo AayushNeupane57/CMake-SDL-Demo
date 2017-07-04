@@ -7,8 +7,16 @@ find_package(SDL2 REQUIRED)
 
 # look for glew relative to the "GLEW" environment variable path
 # Need to set GLEW_INCLUDE_DIR and GLEW_LIBRARY_RELEASE
-set(GLEW_INCLUDE_DIR "ENV{GLEW}/include")
-set(GLEW_LIBRARY_RELEASE "ENV{GLEW}/lib/Release")
+set(GLEW_INCLUDE_DIR $ENV{GLEW}/include)
+set(GLEW_LIBRARY_RELEASE $ENV{GLEW}/lib/Release)
+
+# Overwrite path vars for MacOS
+# Assume GLEW was installed via Homebrew
+IF(APPLE)
+  set(GLEW_BASE_DIR /usr/local/cellar/glew/2.0.0)
+  set(GLEW_INCLUDE_DIR ${GLEW_BASE_DIR}/include)
+  set(GLEW_LIBRARY_RELEASE ${GLEW_BASE_DIR}/lib)
+ENDIF()
 find_package(GLEW REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
 
