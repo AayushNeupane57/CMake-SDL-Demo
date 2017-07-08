@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 			SDL_WINDOWPOS_CENTERED,		// pos y
 			1280,											// width
 			720,											// height
-			SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN
+			SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 	);
 
 	SDL_GLContext glContext = SDL_GL_CreateContext(mainWindow);
@@ -46,6 +46,11 @@ int main(int argc, char** argv)
 #endif
   while (true)
   {
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			// process pending window events (move, resize, system ui rendering, etc.)
+		}
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     SDL_GL_SwapWindow(mainWindow);
