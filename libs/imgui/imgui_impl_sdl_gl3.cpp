@@ -16,8 +16,7 @@
 #ifndef __APPLE__
 	#include <GL/glew.h>
 #else                   // Include standard MacOS OpenGL headers
-	#include <OpenGL/glu.h>
-	#include <OpenGL/glext.h>
+  #include <OpenGL/gl3.h>
 #endif
 
 
