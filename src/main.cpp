@@ -1,11 +1,11 @@
 #include <SDL.h>
-#include <SDL_opengl.h>
 #ifndef __APPLE__
-  #include <GL/glew.h>  // Don't need GLEW ON MacOS
+	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 #else                   // Include standard MacOS OpenGL headers
-  #include <OpenGL/glu.h>
-  #include <OpenGL/glext.h>
+	#include <OpenGL/glu.h>
+	#include <OpenGL/glext.h>
 #endif
+#include <SDL_opengl.h>
 #include <iostream>
 
 using namespace std;
