@@ -6,6 +6,8 @@
 	#include <OpenGL/glext.h>
 #endif
 #include <SDL_opengl.h>
+#include "../libs/imgui/imgui.h"
+#include "../libs/imgui/imgui_impl_sdl_gl3.h"
 #include <iostream>
 
 using namespace std;
@@ -44,20 +46,34 @@ int main(int argc, char** argv)
 			cout << "Error initializing GLEW: " << glewGetErrorString(glewError) << endl;
 	}
 #endif
-  while (true)
+
+	ImGui_ImplSdlGL3_Init(mainWindow);
+
+	bool running = true;
+  while (running)
   {
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			// process pending window events (move, resize, system ui rendering, etc.)
+			ImGui_ImplSdlGL3_ProcessEvent(&event);
+			if (event.type == SDL_QUIT) {
+				running = false;
+			}
 		}
+		bool show_test_window = true;
+		ImGui_ImplSdlGL3_NewFrame(mainWindow);
+		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
+		ImGui::ShowTestWindow(&show_test_window);
+
     glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ImGui::Render();
     SDL_GL_SwapWindow(mainWindow);
     SDL_Delay(16);
   }
 
 	// teardown
+	ImGui_ImplSdlGL3_Shutdown();
 	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(mainWindow);
 	SDL_Quit();
