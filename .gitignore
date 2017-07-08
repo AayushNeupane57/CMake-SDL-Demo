@@ -3,3 +3,4 @@ CMakeFiles
 include/SDL2/
 Win32
 .DS_Store
+.vs/
