@@ -7,18 +7,21 @@ find_package(SDL2 REQUIRED)
 
 # look for glew relative to the "GLEW" environment variable path
 # Need to set GLEW_INCLUDE_DIR and GLEW_LIBRARY_RELEASE
-set(GLEW_INCLUDE_DIR $ENV{GLEW}/include)
-set(GLEW_LIBRARY_RELEASE $ENV{GLEW}/lib/Release/Win32/glew32.lib)
-
-# Overwrite path vars for MacOS
-# Assume GLEW was installed via Homebrew
-IF(APPLE)
-  set(GLEW_BASE_DIR /usr/local/cellar/glew/2.0.0)
-  set(GLEW_INCLUDE_DIR ${GLEW_BASE_DIR}/include)
-  set(GLEW_LIBRARY_RELEASE ${GLEW_BASE_DIR}/lib)
+IF(NOT(APPLE))
+  set(GLEW_INCLUDE_DIR $ENV{GLEW}/include)
+  set(GLEW_LIBRARY_RELEASE $ENV{GLEW}/lib/Release/Win32/glew32.lib)
+  find_package(GLEW REQUIRED)
 ENDIF()
-find_package(GLEW REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS})
+
+find_package(OPENGL REQUIRED)
+
+include_directories(${SDL2_INCLUDE_DIR} ${OPENGL_INCLUDE_DIRS})
+set(LINK_LIBRARIES ${OPENGL_LIBRARIES} ${SDL2_LIBRARY})
+
+IF(NOT(APPLE))
+  include_directories( ${include_directories} ${GLEW_INCLUDE_DIRS})
+  set(LINK_LIBRARIES LINK_LIBRARIES {GLEW_LIBRARIES})
+ENDIF()
 
 set (SOURCE_FILES 
     ${CMAKE_SOURCE_DIR}/src/main.cpp
@@ -33,4 +36,4 @@ set (SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/libs/imgui/stb_truetype.h)
 
 add_executable(cmake_sdl ${SOURCE_FILES})
-target_link_libraries(cmake_sdl ${GLEW_LIBRARIES} ${SDL2_LIBRARY})
+target_link_libraries(cmake_sdl ${LINK_LIBRARIES})
