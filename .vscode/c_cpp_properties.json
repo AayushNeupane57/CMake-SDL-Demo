@@ -12,11 +12,16 @@
             "browse": {
                 "path": [
                     "/usr/include",
-                    "/usr/local/include"
+                    "/usr/local/include",
+                    "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            }
+            },
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ]
         },
         {
             "name": "Linux",
@@ -30,7 +35,8 @@
             "browse": {
                 "path": [
                     "/usr/include",
-                    "/usr/local/include"
+                    "/usr/local/include",
+                    "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
@@ -59,11 +65,13 @@
                     "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/ucrt",
                     "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/shared",
                     "C:/Program Files (x86)/Windows Kits/10/Include/10.0.14393.0/winrt",
-                    "%SDL2%"
+                    "%SDL2%",
+                    "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             }
         }
-    ]
+    ],
+    "version": 3
 }
