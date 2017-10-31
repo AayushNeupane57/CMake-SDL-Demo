@@ -42,7 +42,20 @@ set (SOURCE_FILES
 add_executable(cmake_sdl ${SOURCE_FILES})
 target_link_libraries(cmake_sdl ${LINK_LIBRARIES})
 
+set(ASSET_COPY_DIR $<TARGET_FILE_DIR:cmake_sdl>/assets)
+
+IF(NOT(APPLE))
+		set(ASSET_COPY_DIR $<TARGET_FILE_DIR:cmake_sdl>/../assets)
+		set(GLEW_BIN $ENV{GLEW}/bin/Release/Win32/glew32.dll)
+
+		# Copy glew32.dll to output directory
+		add_custom_command(
+				TARGET cmake_sdl POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy ${GLEW_BIN} $<TARGET_FILE_DIR:cmake_sdl>
+		)
+ENDIF()
+
 add_custom_command(
     TARGET cmake_sdl POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:cmake_sdl>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ${ASSET_COPY_DIR}
 )
