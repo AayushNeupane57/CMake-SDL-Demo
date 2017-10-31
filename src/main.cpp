@@ -4,9 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
+#include <filesystem>
 #ifndef __APPLE__
-    #include <SDL_opengl.h>
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
+	#include <SDL_opengl.h>
 #else                   // Include standard MacOS OpenGL headers
 	//#include <OpenGL/glu.h>
 	//#include <OpenGL/glext.h>
