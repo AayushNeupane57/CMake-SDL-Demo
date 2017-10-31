@@ -5,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <filesystem>
 #ifndef __APPLE__
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 	#include <SDL_opengl.h>
