@@ -36,7 +36,8 @@ set (SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/libs/imgui/stb_textedit.h
     ${CMAKE_SOURCE_DIR}/libs/imgui/stb_truetype.h
     ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.cpp
-    ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.h)
+    ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.h
+    ${CMAKE_SOURCE_DIR}/libs/stb_image.h)
 
 add_executable(cmake_sdl ${SOURCE_FILES})
 target_link_libraries(cmake_sdl ${LINK_LIBRARIES})
