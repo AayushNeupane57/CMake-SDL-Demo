@@ -41,3 +41,8 @@ set (SOURCE_FILES
 
 add_executable(cmake_sdl ${SOURCE_FILES})
 target_link_libraries(cmake_sdl ${LINK_LIBRARIES})
+
+add_custom_command(
+    TARGET cmake_sdl POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:cmake_sdl>/assets
+)
