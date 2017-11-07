@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <memory>
 #ifndef __APPLE__
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 	#include <SDL_opengl.h>
@@ -15,18 +16,19 @@
 #endif
 #include "../libs/imgui/imgui.h"
 #include "../libs/imgui/imgui_impl_sdl_gl3.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "../libs/stb_image.h"
+#include "../src/render_stage.h"
+#include "../src/stage_image.h"
 
 using namespace std;
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
+void subFunc();
 
 int main(int argc, char** argv)
 {
-    int x, y, n;
-    unsigned char *data = stbi_load("./assets/03_HiRes_upload.jpg", &x, &y, &n, 0);
-    cout << x << ", " << y << endl;
+	subFunc();
+	auto image = make_unique<StageImage>();
+	image->SetImage("./assets/03_HiRes_upload.jpg");
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		cout << "SDL failed to initialize: " << SDL_GetError() << endl;
@@ -38,16 +40,15 @@ int main(int argc, char** argv)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	SDL_Window* mainWindow = SDL_CreateWindow(
+	unique_ptr<SDL_Window, void(*)(SDL_Window*)> mainWindow( SDL_CreateWindow(
 			"SDL2 OpenGL Demo",				// title
 			SDL_WINDOWPOS_CENTERED,		// pos x
 			SDL_WINDOWPOS_CENTERED,		// pos y
 			1280,											// width
 			720,											// height
-			SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
-	);
+			SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE), SDL_DestroyWindow);
 
-	SDL_GLContext glContext = SDL_GL_CreateContext(mainWindow);
+	SDL_GLContext glContext = SDL_GL_CreateContext(mainWindow.get());
   if (glContext == NULL)
   {
     cout << "OpenGL context failed to initialize" << endl;
@@ -61,23 +62,23 @@ int main(int argc, char** argv)
 	}
 #endif
 
-	ImGui_ImplSdlGL3_Init(mainWindow);
+	ImGui_ImplSdlGL3_Init(mainWindow.get());
 
 	bool running = true;
-    GLuint vertexArrayID;
-    glGenVertexArrays(1, &vertexArrayID);
-    glBindVertexArray(vertexArrayID);
-    static const GLfloat g_vertex_buffer_data[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f,
-    };
-    GLuint vertexBufferID;
-    glGenBuffers(1, &vertexBufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    
-    GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
+  GLuint vertexArrayID;
+  glGenVertexArrays(1, &vertexArrayID);
+  glBindVertexArray(vertexArrayID);
+  GLuint vertexBufferID;
+	int size = image->GetVertexBuffer().size() * sizeof(GLfloat);
+  glGenBuffers(1, &vertexBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+  glBufferData(
+		GL_ARRAY_BUFFER,
+		size,
+		image->GetVertexBuffer().data(),
+		GL_STATIC_DRAW
+	);
+	GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
     
   while (running)
   {
@@ -90,7 +91,7 @@ int main(int argc, char** argv)
 			}
 		}
 		bool show_test_window = true;
-		ImGui_ImplSdlGL3_NewFrame(mainWindow);
+		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
 		ImGui::ShowTestWindow(&show_test_window);
 
@@ -100,20 +101,23 @@ int main(int argc, char** argv)
       glEnableVertexAttribArray(0);
       glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-      glDrawArrays(GL_TRIANGLES, 0, 3);
+      glDrawArrays(GL_TRIANGLES, 0, 6);
       glDisableVertexAttribArray(0);
     ImGui::Render();
-    SDL_GL_SwapWindow(mainWindow);
+    SDL_GL_SwapWindow(mainWindow.get());
     SDL_Delay(16);
   }
 
 	// teardown
-    stbi_image_free(data);
 	ImGui_ImplSdlGL3_Shutdown();
 	SDL_GL_DeleteContext(glContext);
-	SDL_DestroyWindow(mainWindow);
 	SDL_Quit();
 	return 0;
+}
+
+void subFunc() {
+	auto stage = make_unique<RenderStage>(1280, 720, "My Test Window");
+	stage->Render();
 }
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
