@@ -10,12 +10,10 @@
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 	#include <SDL_opengl.h>
 #else                   // Include standard MacOS OpenGL headers
-	//#include <OpenGL/glu.h>
-	//#include <OpenGL/glext.h>
-    #include <OpenGL/gl3.h>
+  #include <OpenGL/gl3.h>
 #endif
-#include "../libs/imgui/imgui.h"
-#include "../libs/imgui/imgui_impl_sdl_gl3.h"
+#include <imgui.h>
+#include <imgui_impl_sdl_gl3.h>
 #include "../src/render_stage.h"
 #include "../src/stage_image.h"
 
@@ -79,7 +77,9 @@ int main(int argc, char** argv)
 		GL_STATIC_DRAW
 	);
 	GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
-    
+  GLuint matrixID = glGetUniformLocation(programID, "u_matrix");
+  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+  
   while (running)
   {
 		SDL_Event event;
@@ -91,14 +91,17 @@ int main(int argc, char** argv)
 			}
 		}
 		bool show_test_window = true;
+    cameraPosition.x += 2.0f;
 		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
 		ImGui::ShowTestWindow(&show_test_window);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::mat4 srt_matrix = image->GetMatrix(cameraPosition, glm::vec2(1280, 720));
       glUseProgram(programID);
       glEnableVertexAttribArray(0);
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &srt_matrix[0][0]);
       glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
       glDrawArrays(GL_TRIANGLES, 0, 6);

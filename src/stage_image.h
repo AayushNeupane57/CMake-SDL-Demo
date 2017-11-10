@@ -8,6 +8,7 @@
 #else                   // Include standard MacOS OpenGL headers
 	#include <OpenGL/gl3.h>
 #endif
+#include <glm/glm.hpp>
 
 class StageImage {
 private:
@@ -16,8 +17,10 @@ private:
 	std::vector<GLfloat> _vertexBuffer;
 	std::vector<GLfloat> _buildVertexBuffer(int img_w, int img_h);
 public:
+  glm::vec3 Position, Origin, Scale;
 	StageImage();
 	~StageImage();
 	void SetImage(std::string filepath);
 	std::vector<GLfloat> GetVertexBuffer();
+  glm::mat4 GetMatrix(const glm::vec3 &cameraPosition, const glm::vec2 &windowSize);
 };
