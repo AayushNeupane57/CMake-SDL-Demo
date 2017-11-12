@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 {
 	subFunc();
 	auto image = make_unique<StageImage>();
-	image->SetImage("./assets/03_HiRes_upload.jpg");
+	
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		cout << "SDL failed to initialize: " << SDL_GetError() << endl;
@@ -62,10 +62,14 @@ int main(int argc, char** argv)
 
 	ImGui_ImplSdlGL3_Init(mainWindow.get());
 
+	image->SetImage("./assets/03_HiRes_upload.jpg");
+
 	bool running = true;
   GLuint vertexArrayID;
   glGenVertexArrays(1, &vertexArrayID);
   glBindVertexArray(vertexArrayID);
+
+
   GLuint vertexBufferID;
 	int size = image->GetVertexBuffer().size() * sizeof(GLfloat);
   glGenBuffers(1, &vertexBufferID);
@@ -76,6 +80,12 @@ int main(int argc, char** argv)
 		image->GetVertexBuffer().data(),
 		GL_STATIC_DRAW
 	);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
 	GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
   GLuint matrixID = glGetUniformLocation(programID, "u_matrix");
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -92,20 +102,19 @@ int main(int argc, char** argv)
 		}
 		bool show_test_window = true;
     cameraPosition.x += 2.0f;
+		image->CameraZoom += 0.0005f;
 		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
 		ImGui::ShowTestWindow(&show_test_window);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 srt_matrix = image->GetMatrix(cameraPosition, glm::vec2(1280, 720));
-      glUseProgram(programID);
-      glEnableVertexAttribArray(0);
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &srt_matrix[0][0]);
-      glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
-      glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-      glDrawArrays(GL_TRIANGLES, 0, 6);
-      glDisableVertexAttribArray(0);
+    glUseProgram(programID);
+		glUniformMatrix4fv(matrixID, 1, GL_FALSE, &srt_matrix[0][0]);
+		glBindTexture(GL_TEXTURE_2D, image->textureID);
+		glBindVertexArray(vertexArrayID);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     ImGui::Render();
     SDL_GL_SwapWindow(mainWindow.get());
     SDL_Delay(16);
