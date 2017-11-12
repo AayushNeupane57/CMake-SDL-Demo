@@ -18,6 +18,8 @@ private:
 	std::vector<GLfloat> _buildVertexBuffer(int img_w, int img_h);
 public:
   glm::vec3 Position, Origin, Scale;
+	float CameraZoom = 0.2f;
+	GLuint textureID;
 	StageImage();
 	~StageImage();
 	void SetImage(std::string filepath);
