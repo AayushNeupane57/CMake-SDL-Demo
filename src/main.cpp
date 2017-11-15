@@ -99,10 +99,13 @@ int main(int argc, char** argv)
 			if (event.type == SDL_QUIT) {
 				running = false;
 			}
+      if (event.type == SDL_MOUSEMOTION && event.button.button == SDL_BUTTON_LEFT)
+      {
+        cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
+        cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
+      }
 		}
 		bool show_test_window = true;
-    cameraPosition.x += 2.0f;
-		image->CameraZoom += 0.0005f;
 		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
 		ImGui::ShowTestWindow(&show_test_window);
