@@ -89,21 +89,31 @@ int main(int argc, char** argv)
 	GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
   GLuint matrixID = glGetUniformLocation(programID, "u_matrix");
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-  
   while (running)
   {
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
+			bool hasMouseFocus = SDL_GetWindowFlags(mainWindow.get()) & SDL_WINDOW_MOUSE_FOCUS;
+			bool leftMouseButtonDown = SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
 			ImGui_ImplSdlGL3_ProcessEvent(&event);
 			if (event.type == SDL_QUIT) {
 				running = false;
 			}
-      if (event.type == SDL_MOUSEMOTION && event.button.button == SDL_BUTTON_LEFT)
+			// TODO: try getting button state from the event rather than querying MouseState
+      if (event.type == SDL_MOUSEMOTION && leftMouseButtonDown)
       {
-        cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
-        cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
+				if (hasMouseFocus) {
+					cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
+					cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
+				}
       }
+			if (event.type == SDL_MOUSEWHEEL) {
+				image->CameraZoom += (event.wheel.y * 0.01f);
+				if (image->CameraZoom < 0) {
+					image->CameraZoom = 0;
+				}
+			}
 		}
 		bool show_test_window = true;
 		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
