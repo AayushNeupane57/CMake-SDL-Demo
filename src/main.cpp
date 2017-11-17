@@ -96,22 +96,27 @@ int main(int argc, char** argv)
 		{
 			bool hasMouseFocus = SDL_GetWindowFlags(mainWindow.get()) & SDL_WINDOW_MOUSE_FOCUS;
 			bool leftMouseButtonDown = SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
+
 			ImGui_ImplSdlGL3_ProcessEvent(&event);
+			auto io = ImGui::GetIO();
+
 			if (event.type == SDL_QUIT) {
 				running = false;
 			}
-			// TODO: try getting button state from the event rather than querying MouseState
-      if (event.type == SDL_MOUSEMOTION && leftMouseButtonDown)
-      {
-				if (hasMouseFocus) {
-					cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
-					cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
+			// don't process mouse events when interacting with imgui window
+			if (!io.WantCaptureMouse) {
+				if (event.type == SDL_MOUSEMOTION && leftMouseButtonDown)
+				{
+					if (hasMouseFocus) {
+						cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
+						cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
+					}
 				}
-      }
-			if (event.type == SDL_MOUSEWHEEL) {
-				image->CameraZoom += (event.wheel.y * 0.01f);
-				if (image->CameraZoom < 0) {
-					image->CameraZoom = 0;
+				if (event.type == SDL_MOUSEWHEEL) {
+					image->CameraZoom += (event.wheel.y * 0.01f);
+					if (image->CameraZoom < 0) {
+						image->CameraZoom = 0;
+					}
 				}
 			}
 		}
@@ -120,7 +125,7 @@ int main(int argc, char** argv)
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
 		ImGui::ShowTestWindow(&show_test_window);
 
-    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 srt_matrix = image->GetMatrix(cameraPosition, glm::vec2(1280, 720));
     glUseProgram(programID);
