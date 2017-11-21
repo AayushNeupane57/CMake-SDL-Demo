@@ -62,6 +62,12 @@ int main(int argc, char** argv)
 
 	ImGui_ImplSdlGL3_Init(mainWindow.get());
 
+	auto io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("./assets/Roboto-Regular.ttf", 16.0f);
+	ImGui::GetStyle().FrameRounding = 0.0f;
+	ImGui::GetStyle().WindowRounding = 0.0f;
+
+
 	image->SetImage("./assets/03_HiRes_upload.jpg");
 
 	bool running = true;
@@ -89,6 +95,8 @@ int main(int argc, char** argv)
 	GLuint programID = LoadShaders("./assets/vertex_shader.vsh", "./assets/fragment_shader.fsh");
   GLuint matrixID = glGetUniformLocation(programID, "u_matrix");
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	bool show_test_window = false;
+	std::string showHideButtonText = "Show ImGui Test Window";
   while (running)
   {
 		SDL_Event event;
@@ -120,10 +128,19 @@ int main(int argc, char** argv)
 				}
 			}
 		}
-		bool show_test_window = true;
 		ImGui_ImplSdlGL3_NewFrame(mainWindow.get());
 		ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
-		ImGui::ShowTestWindow(&show_test_window);
+		float color[] = { 0.3f, 0.6f, 0.9f };
+		ImGui::Text("Test Text");
+		ImGui::ColorEdit3("Color", color);
+		if (ImGui::Button(showHideButtonText.c_str())) {
+			show_test_window = !show_test_window;
+			showHideButtonText = show_test_window ? "Hide ImGui Test Window" : "Show ImGui Test Window";
+		};
+
+		if (show_test_window) {
+			ImGui::ShowTestWindow();
+		}
 
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
