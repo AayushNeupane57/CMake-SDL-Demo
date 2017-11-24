@@ -104,7 +104,6 @@ int main(int argc, char** argv)
 		{
 			bool hasMouseFocus = SDL_GetWindowFlags(mainWindow.get()) & SDL_WINDOW_MOUSE_FOCUS;
 			bool leftMouseButtonDown = SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
-
 			ImGui_ImplSdlGL3_ProcessEvent(&event);
 			auto io = ImGui::GetIO();
 
@@ -137,6 +136,16 @@ int main(int argc, char** argv)
 			show_test_window = !show_test_window;
 			showHideButtonText = show_test_window ? "Hide ImGui Test Window" : "Show ImGui Test Window";
 		};
+
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				ImGui::MenuItem("Open");
+				ImGui::MenuItem("Save", NULL, false, false);
+				ImGui::MenuItem("Save As", NULL, false, false);
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
 
 		if (show_test_window) {
 			ImGui::ShowTestWindow();
