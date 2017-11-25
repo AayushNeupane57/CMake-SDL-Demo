@@ -9,8 +9,10 @@
 #ifndef __APPLE__
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 	#include <SDL_opengl.h>
+  #include <Cocoa/Cocoa.h>
 #else                   // Include standard MacOS OpenGL headers
   #include <OpenGL/gl3.h>
+  #include "./file_dialog_mac.h"
 #endif
 #include <imgui.h>
 #include <imgui_impl_sdl_gl3.h>
@@ -139,7 +141,10 @@ int main(int argc, char** argv)
 
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
-				ImGui::MenuItem("Open");
+        if (ImGui::MenuItem("Open")) {
+          auto filePath = FileDialogMac::openFile();
+          cout << filePath << endl;
+        }
 				ImGui::MenuItem("Save", NULL, false, false);
 				ImGui::MenuItem("Save As", NULL, false, false);
 				ImGui::EndMenu();
