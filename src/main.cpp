@@ -171,7 +171,7 @@ int main(int argc, char** argv)
 						image->SetImage(filePath);
 						// Update existing VBO
 						glBufferSubData(
-							GL_BUFFER,
+							GL_ARRAY_BUFFER,
 							0,
 							size,
 							image->GetVertexBuffer().data()
