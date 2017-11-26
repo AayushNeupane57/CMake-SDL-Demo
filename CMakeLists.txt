@@ -44,10 +44,17 @@ set (SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.cpp
     ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.h
     ${CMAKE_SOURCE_DIR}/libs/stb_image.h
-		${CMAKE_SOURCE_DIR}/src/render_stage.h
-		${CMAKE_SOURCE_DIR}/src/render_stage.cpp
-		${CMAKE_SOURCE_DIR}/src/stage_image.h
-		${CMAKE_SOURCE_DIR}/src/stage_image.cpp)
+    ${CMAKE_SOURCE_DIR}/src/render_stage.h
+    ${CMAKE_SOURCE_DIR}/src/render_stage.cpp
+    ${CMAKE_SOURCE_DIR}/src/stage_image.h
+    ${CMAKE_SOURCE_DIR}/src/stage_image.cpp
+    ${CMAKE_SOURCE_DIR}/src/gl_utils.h
+    ${CMAKE_SOURCE_DIR}/src/gl_utils.cpp)
+
+IF(APPLE)
+    list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.h)
+    list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.mm)
+ENDIF()
 
 add_executable(cmake_sdl ${SOURCE_FILES})
 target_link_libraries(cmake_sdl ${LINK_LIBRARIES})

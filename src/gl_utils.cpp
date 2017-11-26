@@ -1,5 +1,10 @@
 #include "gl_utils.h"
 
+enum _infoLogType {
+  LOG_SHADER,
+  LOG_PROGRAM
+};
+
 std::string _readShaderFileToEnd(std::string filePath) {
 	std::string fileContents = "";
 	std::ifstream vertFileStream(filePath, std::ios::in);
@@ -17,14 +22,14 @@ std::string _readShaderFileToEnd(std::string filePath) {
 	return fileContents;
 }
 
-std::string _getInfoLog(GLuint targetId, GLenum target) {
+std::string _getInfoLog(GLuint targetId, _infoLogType logType) {
 	GLint logMaxLength = 0;
-	(target == GL_SHADER) ?
+	(logType == LOG_SHADER) ?
 		glGetShaderiv(targetId, GL_INFO_LOG_LENGTH, &logMaxLength) :
 		glGetProgramiv(targetId, GL_INFO_LOG_LENGTH, &logMaxLength);
 	std::string infoLog;
 	infoLog.reserve(logMaxLength);
-	(target == GL_SHADER) ?
+	(logType == LOG_SHADER) ?
 		glGetShaderInfoLog(targetId, logMaxLength, &logMaxLength, &infoLog[0]) :
 		glGetProgramInfoLog(targetId, logMaxLength, &logMaxLength, &infoLog[0]);
 	return infoLog;
@@ -38,7 +43,7 @@ void _compileShader(std::string shaderSrc, GLuint targetShaderId) {
 	GLint compilationResult = 0;
 	glGetShaderiv(targetShaderId, GL_COMPILE_STATUS, &compilationResult);
 	if (compilationResult == GL_FALSE) {
-		auto infoLog = _getInfoLog(targetShaderId, GL_SHADER);
+		auto infoLog = _getInfoLog(targetShaderId, LOG_SHADER);
 		std::ostringstream errorStringStream;
 		errorStringStream << "[OpenGL] Shader compilation failed. Error: " << infoLog.data();
 		throw std::runtime_error(errorStringStream.str());
@@ -65,7 +70,7 @@ GLuint GLUtils::CreateProgram(std::string vertex_shader_file_path, std::string f
 	GLint linkResult = 0;
 	glGetProgramiv(programId, GL_LINK_STATUS, &linkResult);
 	if (linkResult == GL_FALSE) {
-		auto infoLog = _getInfoLog(programId, GL_PROGRAM);
+		auto infoLog = _getInfoLog(programId, LOG_PROGRAM);
 		std::ostringstream errorStringStream;
 		errorStringStream << "[OpenGL] Program linking failed. Error: " << infoLog.data();
 		throw std::runtime_error(errorStringStream.str());
