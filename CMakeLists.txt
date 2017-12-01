@@ -49,11 +49,15 @@ set (SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/stage_image.h
     ${CMAKE_SOURCE_DIR}/src/stage_image.cpp
     ${CMAKE_SOURCE_DIR}/src/gl_utils.h
-    ${CMAKE_SOURCE_DIR}/src/gl_utils.cpp)
+    ${CMAKE_SOURCE_DIR}/src/gl_utils.cpp
+		${CMAKE_SOURCE_DIR}/src/file_dialog.h)
 
 IF(APPLE)
-    list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.h)
     list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.mm)
+ENDIF()
+
+IF(NOT(APPLE))
+		list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_win.cpp)
 ENDIF()
 
 add_executable(cmake_sdl ${SOURCE_FILES})

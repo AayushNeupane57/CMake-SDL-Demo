@@ -1,8 +1,8 @@
-#import "file_dialog_mac.h"
+#import "file_dialog.h"
 #import <Cocoa/Cocoa.h>
 
 
-std::string FileDialogMac::openFile() {
+std::string FileDialog::openFile() {
   NSOpenPanel* dialog = [NSOpenPanel openPanel];
   if ([dialog runModal] == NSModalResponseOK) {
     NSArray* urls = [dialog URLs];
