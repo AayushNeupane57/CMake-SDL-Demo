@@ -9,18 +9,15 @@
 #ifndef __APPLE__
 	#include <GL/glew.h>  // Don't need GLEW ON MacOS
 	#include <SDL_opengl.h>
-	#include <windows.h>
-	#include <ShlObj.h>
-	#include <atlstr.h>
 #else                   // Include standard MacOS OpenGL headers
   #include <OpenGL/gl3.h>
-  #include "./file_dialog_mac.h"
 #endif
 #include <imgui.h>
 #include <imgui_impl_sdl_gl3.h>
 #include "../src/render_stage.h"
 #include "../src/stage_image.h"
 #include "../src/gl_utils.h"
+#include "../src/file_dialog.h"
 
 using namespace std;
 
@@ -139,28 +136,7 @@ int main(int argc, char** argv)
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
         if (ImGui::MenuItem("Open")) {
-					string filePath = "";
-#ifdef __APPLE__
-					filePath = FileDialogMac::openFile();
-#endif // __APPLE__
-#ifndef __APPLE__
-					IFileDialog *pfd = NULL;
-					HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
-					if (SUCCEEDED(hr)) {
-						hr = pfd->Show(NULL);
-						if (SUCCEEDED(hr)) {
-							IShellItem* res = NULL;
-							hr = pfd->GetResult(&res);
-							if (hr == S_OK) {
-								LPWSTR path = NULL;
-								res->GetDisplayName(SIGDN_FILESYSPATH, &path);
-								filePath = CW2A(path);
-							}
-							res->Release();
-						}
-					}
-					pfd->Release();
-#endif // !__APPLE__
+					string filePath = FileDialog::openFile();
 					cout << filePath << endl;
 					if (filePath != "") {
 						image->SetImage(filePath);
