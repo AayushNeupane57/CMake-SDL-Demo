@@ -44,13 +44,23 @@ set (SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.cpp
     ${CMAKE_SOURCE_DIR}/libs/imgui/imgui_impl_sdl_gl3.h
     ${CMAKE_SOURCE_DIR}/libs/stb_image.h
-    ${CMAKE_SOURCE_DIR}/src/render_stage.h
-    ${CMAKE_SOURCE_DIR}/src/render_stage.cpp
     ${CMAKE_SOURCE_DIR}/src/stage_image.h
     ${CMAKE_SOURCE_DIR}/src/stage_image.cpp
     ${CMAKE_SOURCE_DIR}/src/gl_utils.h
     ${CMAKE_SOURCE_DIR}/src/gl_utils.cpp
-		${CMAKE_SOURCE_DIR}/src/file_dialog.h)
+		${CMAKE_SOURCE_DIR}/src/file_dialog.h
+		${CMAKE_SOURCE_DIR}/src/main_loop.cpp
+		${CMAKE_SOURCE_DIR}/src/main_loop.h
+		${CMAKE_SOURCE_DIR}/src/scene.h
+		${CMAKE_SOURCE_DIR}/src/demo_scene.cpp
+		${CMAKE_SOURCE_DIR}/src/demo_scene.h
+${CMAKE_SOURCE_DIR}/src/demo_app.cpp
+${CMAKE_SOURCE_DIR}/src/demo_app.h
+		${CMAKE_SOURCE_DIR}/src/renderer.cpp
+		${CMAKE_SOURCE_DIR}/src/renderer.h
+${CMAKE_SOURCE_DIR}/src/app.h
+${CMAKE_SOURCE_DIR}/src/app_platform.cpp
+${CMAKE_SOURCE_DIR}/src/app_platform.h)
 
 IF(APPLE)
     list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.mm)
