@@ -1,13 +1,4 @@
 #include "demo_scene.h"
-#include "app_platform.h"
-#include <stdio.h>
-#include <SDL.h>
-#include <imgui.h>
-#include <imgui_impl_sdl_gl3.h>
-
-#include "gl_utils.h"
-#include "renderer.h"
-#include "file_dialog.h"
 
 void DemoScene::Initialize() {
   show_test_window = false;
@@ -24,11 +15,11 @@ void DemoScene::Initialize() {
     glGenBuffers(1, &vertexBufferID);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
     glBufferData(
-                 GL_ARRAY_BUFFER,
-                 size,
-                 image->GetVertexBuffer().data(),
-                 GL_STATIC_DRAW
-                 );
+			GL_ARRAY_BUFFER,
+			size,
+			image->GetVertexBuffer().data(),
+			GL_STATIC_DRAW
+		);
   
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(0);
@@ -47,35 +38,32 @@ void DemoScene::Initialize() {
 }
 
 void DemoScene::Update() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
-    {
-        auto winPtr = GetWindowPtr();
-        bool hasMouseFocus = SDL_GetWindowFlags(winPtr) & SDL_WINDOW_MOUSE_FOCUS;
-        bool leftMouseButtonDown = SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
-        ImGui_ImplSdlGL3_ProcessEvent(&event);
-        auto io = ImGui::GetIO();
-        
-        //if (event.type == SDL_QUIT) {
-        //    running = false;
-        //}
-        // don't process mouse events when interacting with imgui window
-        if (!io.WantCaptureMouse) {
-            if (event.type == SDL_MOUSEMOTION && leftMouseButtonDown)
-            {
-                if (hasMouseFocus) {
-                    cameraPosition.x += (event.motion.xrel) * (1.0f / image->CameraZoom);
-                    cameraPosition.y += (-event.motion.yrel) * (1.0f / image->CameraZoom);
-                }
-            }
-            if (event.type == SDL_MOUSEWHEEL) {
-                image->CameraZoom += (event.wheel.y * 0.01f);
-                if (image->CameraZoom < 0) {
-                    image->CameraZoom = 0;
-                }
-            }
+	InputEventNode event; // holds copy of next event node, deallocated at end of this function scope
+	bool newFrame = true;
+	while (InputRef()->DigestInputEvents(event, newFrame)) {
+    auto winPtr = GetWindowPtr();
+    bool hasMouseFocus = SDL_GetWindowFlags(winPtr) & SDL_WINDOW_MOUSE_FOCUS;
+    bool leftMouseButtonDown = SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
+		ImGui_ImplSdlGL3_ProcessEvent(&(event.event));
+    auto io = ImGui::GetIO();
+
+    // don't process mouse events when interacting with imgui window
+    if (!io.WantCaptureMouse) {
+      if (event.event.type == SDL_MOUSEMOTION && leftMouseButtonDown) {
+        if (hasMouseFocus) {
+          cameraPosition.x += (event.event.motion.xrel) * (1.0f / image->CameraZoom);
+          cameraPosition.y += (-event.event.motion.yrel) * (1.0f / image->CameraZoom);
         }
+      }
+      if (event.event.type == SDL_MOUSEWHEEL) {
+        image->CameraZoom += (event.event.wheel.y * 0.01f);
+        if (image->CameraZoom < 0) {
+          image->CameraZoom = 0;
+        }
+      }
     }
+		newFrame = false;
+  }
 }
 
 void DemoScene::Render() {
@@ -97,11 +85,11 @@ void DemoScene::Render() {
           image->SetImage(filePath);
           // Update existing VBO
           glBufferSubData(
-                          GL_ARRAY_BUFFER,
-                          0,
-                          size,
-                          image->GetVertexBuffer().data()
-                          );
+						GL_ARRAY_BUFFER,
+            0,
+						size,
+            image->GetVertexBuffer().data()
+					);
         }
       }
       ImGui::MenuItem("Save", NULL, false, false);

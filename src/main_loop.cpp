@@ -1,12 +1,8 @@
 #include "main_loop.h"
 
-main_loop::main_loop()
-{
-}
+main_loop::main_loop() { }
 
-main_loop::~main_loop()
-{
-}
+main_loop::~main_loop() { }
 
 void main_loop::run(std::function<void()> render, std::function<void()> update) {
 	running = true;
@@ -28,4 +24,6 @@ void main_loop::run(std::function<void()> render, std::function<void()> update) 
 
 void main_loop::pause() { }
 
-void main_loop::stop() { }
+void main_loop::stop() {
+	running = false;
+}

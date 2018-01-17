@@ -15,4 +15,6 @@ void DemoApp::Render() {
 	scenes[0]->Render();
 }
 
-void DemoApp::Destroy() {}
+void DemoApp::Destroy() {
+	ImGui_ImplSdlGL3_Shutdown();
+}
