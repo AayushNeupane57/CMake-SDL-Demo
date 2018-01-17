@@ -10,9 +10,14 @@
 
 #include "app.h"
 #include "main_loop.h"
+#include "input.h"
 
 static SDL_Window* windowPtr;
+static main_loop* mainLoop;
+static Input* input;
 
 void CreateWindow();
 SDL_Window* GetWindowPtr();
+Input* InputRef();
 int RunApp(std::shared_ptr<App> app);
+void ProcessInputEvents(Input* input);

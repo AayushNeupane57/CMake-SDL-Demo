@@ -1,8 +1,9 @@
+#pragma once
 #include <stdlib.h>
 #include <iostream>
 #include <SDL.h>
 #include <functional>
-#pragma once
+
 class main_loop
 {
 private:

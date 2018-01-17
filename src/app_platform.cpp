@@ -4,6 +4,10 @@ SDL_Window* GetWindowPtr() {
   return windowPtr;
 }
 
+Input* InputRef() {
+	return input;
+}
+
 void CreateWindow() {
   windowPtr = SDL_CreateWindow(
     "SDL2 OpenGL Demo",                // title
@@ -45,15 +49,32 @@ int RunApp(std::shared_ptr<App> app) {
   app->Initialize();
 
 	// Start the main loop, handle windowing events (TODO):
-	main_loop* mainLoop = new main_loop();
+	input = new Input();
+	mainLoop = new main_loop();
 	mainLoop->run(
 		[app] { app->Render(); },
-		[app] { app->Update(); }
+		[app] {
+			ProcessInputEvents(input);
+			app->Update();
+		}
 	);
-
 	// Teardown:
-	// ImGui_ImplSdlGL3_Shutdown();   Handle UI stuff elsewhere, too specific to be here...
+	app->Destroy();
 	SDL_GL_DeleteContext(glContext);
 	SDL_Quit();
 	return 0;
+}
+
+void ProcessInputEvents(Input* in) {
+	input->FlushEvents();
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_QUIT) {
+			input->FlushEvents();
+			mainLoop->stop();
+		}
+		else {
+			input->PushInputEvent(event);
+		}
+	}
 }
