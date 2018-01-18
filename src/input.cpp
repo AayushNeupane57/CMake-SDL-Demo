@@ -9,8 +9,7 @@ bool Input::DigestInputEvents(InputEventNode& event, bool first) {
 	InputEventNode* eventPtr = nullptr;
 	if (first) {
 		eventPtr = _frameStart.get();
-	}
-	else {
+	} else {
 		eventPtr = event.next.get();
 	}
 	if (eventPtr != nullptr) {

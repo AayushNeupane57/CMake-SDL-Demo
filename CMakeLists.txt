@@ -54,13 +54,15 @@ set (SOURCE_FILES
 		${CMAKE_SOURCE_DIR}/src/scene.h
 		${CMAKE_SOURCE_DIR}/src/demo_scene.cpp
 		${CMAKE_SOURCE_DIR}/src/demo_scene.h
-${CMAKE_SOURCE_DIR}/src/demo_app.cpp
-${CMAKE_SOURCE_DIR}/src/demo_app.h
+    ${CMAKE_SOURCE_DIR}/src/demo_app.cpp
+    ${CMAKE_SOURCE_DIR}/src/demo_app.h
 		${CMAKE_SOURCE_DIR}/src/renderer.cpp
 		${CMAKE_SOURCE_DIR}/src/renderer.h
-${CMAKE_SOURCE_DIR}/src/app.h
-${CMAKE_SOURCE_DIR}/src/app_platform.cpp
-${CMAKE_SOURCE_DIR}/src/app_platform.h)
+    ${CMAKE_SOURCE_DIR}/src/app.h
+    ${CMAKE_SOURCE_DIR}/src/app_platform.cpp
+    ${CMAKE_SOURCE_DIR}/src/app_platform.h
+    ${CMAKE_SOURCE_DIR}/src/input.h
+    ${CMAKE_SOURCE_DIR}/src/input.cpp)
 
 IF(APPLE)
     list(APPEND SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/file_dialog_mac.mm)
